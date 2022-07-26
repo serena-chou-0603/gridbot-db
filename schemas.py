@@ -81,7 +81,7 @@ class UserCreate(_UserBase):
 class User(_UserBase):
     id: int
     is_active: bool
-    posts: List[Post] = []
+    profits: List[Profit] = []
 
     class Config:
         orm_mode = True
