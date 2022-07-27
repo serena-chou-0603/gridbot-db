@@ -38,6 +38,58 @@ def create_user(db: _orm.Session, user: _schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
+# ------------------------------------------------------------------------
+
+
+def get_hourprofits(db: _orm.Session, skip: int = 0, limit: int = 10):
+    return db.query(_models.HourProfit).offset(skip).limit(limit).all()
+
+
+def create_hourprofit(db: _orm.Session, hourprofit: _schemas.HourProfitCreate, user_id: int):
+    hourprofit = _models.HourProfit(**hourprofit.dict(), owner_id=user_id)
+    db.add(hourprofit)
+    db.commit()
+    db.refresh(hourprofit)
+    return hourprofit
+
+
+def get_hourprofit(db: _orm.Session, hourprofit_id: int):
+    return db.query(_models.HourProfit).filter(_models.HourProfit.id == hourprofit_id).first()
+
+
+def delete_hourprofit(db: _orm.Session, hourprofit_id: int):
+    db.query(_models.HourProfit).filter(
+        _models.HourProfit.id == hourprofit_id).delete()
+    db.commit()
+
+
+def update_hourprofit(db: _orm.Session, hourprofit_id: int, hourprofit: _schemas.HourProfitCreate):
+    db_hourprofit = get_hourprofit(db=db, hourprofit_id=hourprofit_id)
+    db_hourprofit.account = hourprofit.account
+    db_hourprofit.symbol = hourprofit.symbol
+    db_hourprofit.balance_total = hourprofit.balance_total
+    db_hourprofit.last_price = hourprofit.last_price
+    db_hourprofit.coin_total = hourprofit.coin_total
+    db_hourprofit.coin_free = hourprofit.coin_free
+    db_hourprofit.coin_value = hourprofit.coin_value
+    db_hourprofit.usd_total = hourprofit.usd_total
+    db_hourprofit.usd_free = hourprofit.usd_free
+    db_hourprofit.realized_hourprofit = hourprofit.realized_hourprofit
+    db_hourprofit.unrealized_hourprofit = hourprofit.unrealized_hourprofit
+    db_hourprofit.total_hourprofit = hourprofit.total_hourprofit
+    db_hourprofit.investment = hourprofit.investment
+    db_hourprofit.grid_apr = hourprofit.grid_apr
+    db_hourprofit.duration = hourprofit.duration
+    db_hourprofit.profit_per_grid = hourprofit.profit_per_grid
+    db_hourprofit.mts_create = hourprofit.mts_create
+    db_hourprofit.mts_update = hourprofit.mts_update
+    db_hourprofit.owner_id = hourprofit.owner_id
+    db.commit()
+    db.refresh(db_hourprofit)
+    return db_hourprofit
+
+# ------------------------------------------------------------------------
+
 
 def get_profits(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.Profit).offset(skip).limit(limit).all()
@@ -50,8 +102,6 @@ def create_profit(db: _orm.Session, profit: _schemas.ProfitCreate, user_id: int)
     db.refresh(profit)
     return profit
 
-# ------------------------------------------------------------------------
-
 
 def get_profit(db: _orm.Session, profit_id: int):
     return db.query(_models.Profit).filter(_models.Profit.id == profit_id).first()
@@ -62,7 +112,7 @@ def delete_profit(db: _orm.Session, profit_id: int):
     db.commit()
 
 
-def update_post(db: _orm.Session, profit_id: int, profit: _schemas.PostCreate):
+def update_profit(db: _orm.Session, profit_id: int, profit: _schemas.ProfitCreate):
     db_profit = get_profit(db=db, profit_id=profit_id)
     db_profit.account = profit.account
     db_profit.symbol = profit.symbol
@@ -86,3 +136,5 @@ def update_post(db: _orm.Session, profit_id: int, profit: _schemas.PostCreate):
     db.commit()
     db.refresh(db_profit)
     return db_profit
+
+# ------------------------------------------------------------------------

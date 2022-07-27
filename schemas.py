@@ -40,26 +40,14 @@ class Profit(_ProfitBase):
     class Config:
         orm_mode = True
 
-
 # -----------------------------------------------
-class _PostBase(_pydantic.BaseModel):
-    title: str
-    content: str
 
 
-class PostCreate(_PostBase):
+class HourProfitCreate(_ProfitBase):
     pass
 
 
-class Post(_PostBase):
-    # {
-    #     "id": 1,
-    #     "owner_id": 23,
-    #     "title": "this is a title",
-    #     "content": "some content for the post",
-    #     "date_created": "12-12-12 00:00:00"
-    #     "date_last_update": "12-12-12 00:00:00"
-    # }
+class HourProfit(_ProfitBase):
     id: int
     owner_id: int
     date_created: _dt.datetime
@@ -68,6 +56,8 @@ class Post(_PostBase):
     # default orm_mode = Fasle
     class Config:
         orm_mode = True
+
+# -----------------------------------------------
 
 
 class _UserBase(_pydantic.BaseModel):
