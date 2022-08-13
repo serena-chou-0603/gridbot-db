@@ -41,6 +41,50 @@ def create_user(db: _orm.Session, user: _schemas.UserCreate):
 # ------------------------------------------------------------------------
 
 
+def get_bots(db: _orm.Session, skip: int = 0, limit: int = 10):
+    return db.query(_models.Bot).offset(skip).limit(limit).all()
+
+
+def create_bot(db: _orm.Session, profit: _schemas.BotCreate, user_id: int):
+    bot = _models.Profit(**bot.dict(), owner_id=user_id)
+    db.add(bot)
+    db.commit()
+    db.refresh(bot)
+    return bot
+
+
+def get_bot(db: _orm.Session, bot_id: int):
+    return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+
+
+def delete_bot(db: _orm.Session, bot_id: int):
+    db.query(_models.Bot).filter(_models.Bot.id == bot_id).delete()
+    db.commit()
+
+
+def update_bot(db: _orm.Session, bot_id: int, bot: _schemas.BotCreate):
+    db_bot = get_bot(db=db, bot_id=bot_id)
+    db_bot.account = bot.account
+    db_bot.symbol = bot.symbol
+    db_bot.position_size = bot.position_size
+    db_bot.grid_size = bot.grid_size
+    db_bot.grid_mode = bot.grid_mode
+    db_bot.follow_up = bot.follow_up
+    db_bot.follow_down = bot.follow_down
+    db_bot.num_buy_grid_lines = bot.num_buy_grid_lines
+    db_bot.num_sell_grid_lines = bot.num_sell_grid_lines
+    db_bot.check_orders_frequency = bot.check_orders_frequency
+    db_bot.api_key = bot.api_key
+    db_bot.secret_key = bot.secret_key
+
+    db_bot.owner_id = bot.owner_id
+    db.commit()
+    db.refresh(db_bot)
+    return db_bot
+
+# ------------------------------------------------------------------------
+
+
 def get_hourprofits(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.HourProfit).offset(skip).limit(limit).all()
 

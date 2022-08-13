@@ -16,6 +16,22 @@ class User(_database.Base):
     profits = _orm.relationship("Profit", back_populates="owner")
     hourprofits = _orm.relationship("HourProfit", back_populates="owner")
 
+class Bot(_database.Base):
+    __tablename__ = "bots"
+    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    account = _sql.Column(_sql.String(255))
+    symbol = _sql.Column(_sql.String(255))
+    position_size = _sql.Column(_sql.Float, default=0)
+    grid_size = _sql.Column(_sql.Float, default=0)
+    grid_mode = _sql.Column(_sql.String(20))
+    follow_up = _sql.Column(_sql.Boolean, default=True)
+    follow_down = _sql.Column(_sql.Boolean, default=False)
+    num_buy_grid_lines = _sql.Column(_sql.Integer, 0)
+    num_sell_grid_lines = _sql.Column(_sql.Integer, 0)
+    check_orders_frequency = _sql.Column(_sql.Integer, 500)
+    api_key = _sql.Column(_sql.String(40))
+    secret_key = _sql.Column(_sql.String(40))
+    owner = _orm.relationship("User", back_populates="bots")
 
 class Profit(_database.Base):
     __tablename__ = "profits"

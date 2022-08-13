@@ -43,6 +43,58 @@ def read_user(user_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db
 # ------------------------------------------------
 
 
+@app.post("/users/{user_id}/bots/", response_model=_schemas.Bot)
+def create_bot(
+    user_id: int,
+    bot: _schemas.BotCreate,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    db_user = _services.get_user(db=db, user_id=user_id)
+    if db_user is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this user does not exist"
+        )
+    return _services.create_bot(db=db, bot=bot, user_id=user_id)
+
+
+@app.get("/bots/", response_model=List[_schemas.Bot])
+def read_bots(
+    skip: int = 0,
+    limit: int = 10,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    bots = _services.get_bots(db=db, skip=skip, limit=limit)
+    return bots
+
+
+@app.get("/bots/{bot_id}", response_model=_schemas.Bot)
+def read_bot(bot_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    bot = _services.get_bot(db=db, bot_id=bot_id)
+    if bot is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this profit does not exist"
+        )
+
+    return bot
+
+
+@app.delete("/bots/{bot_id}")
+def delete_bot(bot_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    _services.delete_bot(db=db, profit_id=bot_id)
+    return {"message": f"successfully deleted bot with id: {bot_id}"}
+
+
+@app.put("/bots/{bot_id}", response_model=_schemas.Bot)
+def update_bot(
+    bot_id: int,
+    bot: _schemas.ProfitCreate,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    return _services.update_bot(db=db, bot=bot, bot_id=bot_id)
+
+# ------------------------------------------------
+
+
 @app.post("/users/{user_id}/profits/", response_model=_schemas.Profit)
 def create_profit(
     user_id: int,
@@ -81,7 +133,7 @@ def read_profit(profit_id: int, db: _orm.Session = _fastapi.Depends(_services.ge
 @app.delete("/profits/{profit_id}")
 def delete_profit(profit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     _services.delete_profit(db=db, profit_id=profit_id)
-    return {"message": f"successfully deleted post with id: {profit_id}"}
+    return {"message": f"successfully deleted profit with id: {profit_id}"}
 
 
 @app.put("/profits/{profit_id}", response_model=_schemas.Profit)
@@ -133,7 +185,7 @@ def read_hourprofit(hourprofit_id: int, db: _orm.Session = _fastapi.Depends(_ser
 @app.delete("/hourprofits/{hourprofit_id}")
 def delete_hourprofit(hourprofit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     _services.delete_hourprofit(db=db, hourprofit_id=hourprofit_id)
-    return {"message": f"successfully deleted post with id: {hourprofit_id}"}
+    return {"message": f"successfully deleted hourprofit with id: {hourprofit_id}"}
 
 
 @app.put("/hourprofits/{hourprofit_id}", response_model=_schemas.HourProfit)

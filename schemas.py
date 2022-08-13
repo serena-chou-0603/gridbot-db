@@ -2,6 +2,41 @@ from typing import List
 import datetime as _dt
 import pydantic as _pydantic
 
+class _BotBase(_pydantic.BaseModel):
+    account: str
+    symbol: str
+    position_size: float
+    grid_size: float
+    grid_mode: str
+    follow_up: bool
+    follow_down: bool
+    num_buy_grid_lines: int
+    num_sell_grid_lines: int
+    check_orders_frequency: int
+    api_key: str
+    secret_key: str
+    start_price: float
+    mts_create: _dt.datetime
+    mts_update: _dt.datetime
+    # ERROR date_created: _dt.datetime
+    # ERROR date_last_updated: _dt.datetime
+
+
+class BotCreate(_BotBase):
+    pass
+
+
+class Bot(_BotBase):
+    id: int
+    owner_id: int
+    date_created: _dt.datetime
+    date_last_updated: _dt.datetime
+
+    # default orm_mode = Fasle
+    class Config:
+        orm_mode = True
+
+# -----------------------------------------------
 
 class _ProfitBase(_pydantic.BaseModel):
     account: str
