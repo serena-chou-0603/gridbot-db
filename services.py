@@ -31,12 +31,12 @@ def get_users(db: _orm.Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: _orm.Session, user: _schemas.UserCreate):
     fake_hashed_password = user.password + "thisisnotsecure"
-    db_user = _models.User(
-        email=user.email, hashed_password=fake_hashed_password)
+    db_user = _models.User(email=user.email, hashed_password=fake_hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
+
 
 # ------------------------------------------------------------------------
 
@@ -45,8 +45,8 @@ def get_bots(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.Bot).offset(skip).limit(limit).all()
 
 
-def create_bot(db: _orm.Session, profit: _schemas.BotCreate, user_id: int):
-    bot = _models.Profit(**bot.dict(), owner_id=user_id)
+def create_bot(db: _orm.Session, bot: _schemas.BotCreate, user_id: int):
+    bot = _models.Bot(**bot.dict(), owner_id=user_id)
     db.add(bot)
     db.commit()
     db.refresh(bot)
@@ -55,6 +55,10 @@ def create_bot(db: _orm.Session, profit: _schemas.BotCreate, user_id: int):
 
 def get_bot(db: _orm.Session, bot_id: int):
     return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+
+
+def get_bot(db: _orm.Session, account: str):
+    return db.query(_models.Bot).filter(_models.Bot.account == account).first()
 
 
 def delete_bot(db: _orm.Session, bot_id: int):
@@ -76,11 +80,14 @@ def update_bot(db: _orm.Session, bot_id: int, bot: _schemas.BotCreate):
     db_bot.check_orders_frequency = bot.check_orders_frequency
     db_bot.api_key = bot.api_key
     db_bot.secret_key = bot.secret_key
+    db_bot.start_date = bot.start_date
+    db_bot.start_price = bot.start_price
 
     db_bot.owner_id = bot.owner_id
     db.commit()
     db.refresh(db_bot)
     return db_bot
+
 
 # ------------------------------------------------------------------------
 
@@ -89,7 +96,9 @@ def get_hourprofits(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.HourProfit).offset(skip).limit(limit).all()
 
 
-def create_hourprofit(db: _orm.Session, hourprofit: _schemas.HourProfitCreate, user_id: int):
+def create_hourprofit(
+    db: _orm.Session, hourprofit: _schemas.HourProfitCreate, user_id: int
+):
     hourprofit = _models.HourProfit(**hourprofit.dict(), owner_id=user_id)
     db.add(hourprofit)
     db.commit()
@@ -98,16 +107,21 @@ def create_hourprofit(db: _orm.Session, hourprofit: _schemas.HourProfitCreate, u
 
 
 def get_hourprofit(db: _orm.Session, hourprofit_id: int):
-    return db.query(_models.HourProfit).filter(_models.HourProfit.id == hourprofit_id).first()
+    return (
+        db.query(_models.HourProfit)
+        .filter(_models.HourProfit.id == hourprofit_id)
+        .first()
+    )
 
 
 def delete_hourprofit(db: _orm.Session, hourprofit_id: int):
-    db.query(_models.HourProfit).filter(
-        _models.HourProfit.id == hourprofit_id).delete()
+    db.query(_models.HourProfit).filter(_models.HourProfit.id == hourprofit_id).delete()
     db.commit()
 
 
-def update_hourprofit(db: _orm.Session, hourprofit_id: int, hourprofit: _schemas.HourProfitCreate):
+def update_hourprofit(
+    db: _orm.Session, hourprofit_id: int, hourprofit: _schemas.HourProfitCreate
+):
     db_hourprofit = get_hourprofit(db=db, hourprofit_id=hourprofit_id)
     db_hourprofit.account = hourprofit.account
     db_hourprofit.symbol = hourprofit.symbol
@@ -131,6 +145,7 @@ def update_hourprofit(db: _orm.Session, hourprofit_id: int, hourprofit: _schemas
     db.commit()
     db.refresh(db_hourprofit)
     return db_hourprofit
+
 
 # ------------------------------------------------------------------------
 
@@ -180,5 +195,6 @@ def update_profit(db: _orm.Session, profit_id: int, profit: _schemas.ProfitCreat
     db.commit()
     db.refresh(db_profit)
     return db_profit
+
 
 # ------------------------------------------------------------------------

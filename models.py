@@ -17,6 +17,7 @@ class User(_database.Base):
     hourprofits = _orm.relationship("HourProfit", back_populates="owner")
     bots = _orm.relationship("Bot", back_populates="owner")
 
+
 class Bot(_database.Base):
     __tablename__ = "bots"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
@@ -30,9 +31,18 @@ class Bot(_database.Base):
     num_buy_grid_lines = _sql.Column(_sql.Integer, default=0)
     num_sell_grid_lines = _sql.Column(_sql.Integer, default=0)
     check_orders_frequency = _sql.Column(_sql.Integer, default=500)
+    investment = _sql.Column(_sql.Float, default=0)
+    start_date = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    start_price = _sql.Column(_sql.Float, default=0)
     api_key = _sql.Column(_sql.String(40))
     secret_key = _sql.Column(_sql.String(40))
+
+    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+
     owner = _orm.relationship("User", back_populates="bots")
+
 
 class Profit(_database.Base):
     __tablename__ = "profits"
