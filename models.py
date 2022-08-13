@@ -15,6 +15,7 @@ class User(_database.Base):
 
     profits = _orm.relationship("Profit", back_populates="owner")
     hourprofits = _orm.relationship("HourProfit", back_populates="owner")
+    bots = _orm.relationship("Bot", back_populates="owner")
 
 class Bot(_database.Base):
     __tablename__ = "bots"

@@ -30,6 +30,7 @@ services:
     container_name: app
     build: .
     command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    # command: bash -c "/app/bootstrap.sh" # then `docker exec -it app /bin/bash` to run uvicon, easier to debug
     volumes:
       - .:/app
     ports:
