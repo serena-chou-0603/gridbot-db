@@ -108,18 +108,19 @@ def update_bot(
 # ------------------------------------------------
 
 
-@app.post("/users/{user_id}/profits/", response_model=_schemas.Profit)
+@app.post("/bots/{bot_id}/profits/", response_model=_schemas.Profit)
 def create_profit(
-    user_id: int,
+    bot_id: int,
     profit: _schemas.ProfitCreate,
     db: _orm.Session = _fastapi.Depends(_services.get_db),
 ):
-    db_user = _services.get_user(db=db, user_id=user_id)
-    if db_user is None:
+    print(f"create_profit(), bot_id= {bot_id}")
+    db_bot = _services.get_bot(db=db, bot_id=bot_id)
+    if db_bot is None:
         raise _fastapi.HTTPException(
-            status_code=404, detail="sorry this user does not exist"
+            status_code=404, detail="sorry this bot does not exist"
         )
-    return _services.create_profit(db=db, profit=profit, user_id=user_id)
+    return _services.create_profit(db=db, profit=profit, bot_id=bot_id)
 
 
 @app.get("/profits/", response_model=List[_schemas.Profit])
@@ -163,18 +164,18 @@ def update_profit(
 # ------------------------------------------------
 
 
-@app.post("/users/{user_id}/hourprofits/", response_model=_schemas.HourProfit)
+@app.post("/bots/{bot_id}/hourprofits/", response_model=_schemas.HourProfit)
 def create_hourprofit(
-    user_id: int,
+    bot_id: int,
     hourprofit: _schemas.ProfitCreate,
     db: _orm.Session = _fastapi.Depends(_services.get_db),
 ):
-    db_user = _services.get_user(db=db, user_id=user_id)
-    if db_user is None:
+    db_bot = _services.get_bot(db=db, bot_id=bot_id)
+    if db_bot is None:
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this user does not exist"
         )
-    return _services.create_hourprofit(db=db, hourprofit=hourprofit, user_id=user_id)
+    return _services.create_hourprofit(db=db, hourprofit=hourprofit, bot_id=bot_id)
 
 
 @app.get("/hourprofits/", response_model=List[_schemas.HourProfit])
@@ -191,7 +192,7 @@ def read_hourprofits(
 def read_hourprofit(
     hourprofit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
-    hourprofit = _services.get_profit(db=db, hourprofit_id=hourprofit_id)
+    hourprofit = _services.get_hourprofit(db=db, hourprofit_id=hourprofit_id)
     if hourprofit is None:
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this profit does not exist"

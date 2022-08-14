@@ -70,7 +70,7 @@ class ProfitCreate(_ProfitBase):
 
 class Profit(_ProfitBase):
     id: int
-    owner_id: int
+    robot_id: int
     date_created: _dt.datetime
     date_last_updated: _dt.datetime
 
@@ -88,7 +88,7 @@ class HourProfitCreate(_ProfitBase):
 
 class HourProfit(_ProfitBase):
     id: int
-    owner_id: int
+    robot_id: int
     date_created: _dt.datetime
     date_last_updated: _dt.datetime
 

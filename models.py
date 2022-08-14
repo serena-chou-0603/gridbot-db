@@ -13,21 +13,23 @@ class User(_database.Base):
     hashed_password = _sql.Column(_sql.String(255))
     is_active = _sql.Column(_sql.Boolean, default=True)
 
-    profits = _orm.relationship("Profit", back_populates="owner")
-    hourprofits = _orm.relationship("HourProfit", back_populates="owner")
+    # profits = _orm.relationship("Profit", back_populates="owner")
+    # hourprofits = _orm.relationship("HourProfit", back_populates="owner")
     bots = _orm.relationship("Bot", back_populates="owner")
 
 
 class Bot(_database.Base):
     __tablename__ = "bots"
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    is_active = _sql.Column(_sql.Boolean, default=True)
     account = _sql.Column(_sql.String(255))
     symbol = _sql.Column(_sql.String(255))
     position_size = _sql.Column(_sql.Float, default=0)
     grid_size = _sql.Column(_sql.Float, default=0)
-    grid_mode = _sql.Column(_sql.String(20))
     follow_up = _sql.Column(_sql.Boolean, default=True)
     follow_down = _sql.Column(_sql.Boolean, default=False)
+    grid_mode = _sql.Column(_sql.String(20))
     num_buy_grid_lines = _sql.Column(_sql.Integer, default=0)
     num_sell_grid_lines = _sql.Column(_sql.Integer, default=0)
     check_orders_frequency = _sql.Column(_sql.Integer, default=500)
@@ -36,12 +38,13 @@ class Bot(_database.Base):
     start_price = _sql.Column(_sql.Float, default=0)
     api_key = _sql.Column(_sql.String(40))
     secret_key = _sql.Column(_sql.String(40))
-
-    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
     date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
     owner = _orm.relationship("User", back_populates="bots")
+
+    profits = _orm.relationship("Profit", back_populates="robot")
+    hourprofits = _orm.relationship("HourProfit", back_populates="robot")
 
 
 class Profit(_database.Base):
@@ -65,11 +68,13 @@ class Profit(_database.Base):
     profit_per_grid = _sql.Column(_sql.Float, default=0)
     mts_create = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     mts_update = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
     date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
-    owner = _orm.relationship("User", back_populates="profits")
+    # owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    # owner = _orm.relationship("User", back_populates="profits")
+    robot_id = _sql.Column(_sql.Integer, _sql.ForeignKey("bots.id"))
+    robot = _orm.relationship("Bot", back_populates="profits")
 
 
 class HourProfit(_database.Base):
@@ -93,8 +98,10 @@ class HourProfit(_database.Base):
     profit_per_grid = _sql.Column(_sql.Float, default=0)
     mts_create = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     mts_update = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
-    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
     date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
     date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
 
-    owner = _orm.relationship("User", back_populates="hourprofits")
+    # owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    # owner = _orm.relationship("User", back_populates="hourprofits")
+    robot_id = _sql.Column(_sql.Integer, _sql.ForeignKey("bots.id"))
+    robot = _orm.relationship("Bot", back_populates="hourprofits")

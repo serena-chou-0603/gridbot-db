@@ -53,12 +53,16 @@ def create_bot(db: _orm.Session, bot: _schemas.BotCreate, user_id: int):
     return bot
 
 
-def get_bot(db: _orm.Session, bot_id: int):
-    return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
-
-
-def get_bot(db: _orm.Session, account: str):
-    return db.query(_models.Bot).filter(_models.Bot.account == account).first()
+# def get_bot(db: _orm.Session, bot_id: int):
+#    return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+#
+# def get_bot(db: _orm.Session, account: str):
+#    return db.query(_models.Bot).filter(_models.Bot.account == account).first()
+def get_bot(db: _orm.Session, bot_id: int = -1, account: str = ""):
+    if bot_id > 0:
+        return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+    if account != "":
+        return db.query(_models.Bot).filter(_models.Bot.account == account).first()
 
 
 def delete_bot(db: _orm.Session, bot_id: int):
@@ -97,9 +101,9 @@ def get_hourprofits(db: _orm.Session, skip: int = 0, limit: int = 10):
 
 
 def create_hourprofit(
-    db: _orm.Session, hourprofit: _schemas.HourProfitCreate, user_id: int
+    db: _orm.Session, hourprofit: _schemas.HourProfitCreate, bot_id: int
 ):
-    hourprofit = _models.HourProfit(**hourprofit.dict(), owner_id=user_id)
+    hourprofit = _models.HourProfit(**hourprofit.dict(), robot_id=bot_id)
     db.add(hourprofit)
     db.commit()
     db.refresh(hourprofit)
@@ -132,16 +136,16 @@ def update_hourprofit(
     db_hourprofit.coin_value = hourprofit.coin_value
     db_hourprofit.usd_total = hourprofit.usd_total
     db_hourprofit.usd_free = hourprofit.usd_free
-    db_hourprofit.realized_hourprofit = hourprofit.realized_hourprofit
-    db_hourprofit.unrealized_hourprofit = hourprofit.unrealized_hourprofit
-    db_hourprofit.total_hourprofit = hourprofit.total_hourprofit
+    db_hourprofit.realized_profit = hourprofit.realized_profit
+    db_hourprofit.unrealized_profit = hourprofit.unrealized_profit
+    db_hourprofit.total_profit = hourprofit.total_profit
     db_hourprofit.investment = hourprofit.investment
     db_hourprofit.grid_apr = hourprofit.grid_apr
     db_hourprofit.duration = hourprofit.duration
     db_hourprofit.profit_per_grid = hourprofit.profit_per_grid
     db_hourprofit.mts_create = hourprofit.mts_create
     db_hourprofit.mts_update = hourprofit.mts_update
-    db_hourprofit.owner_id = hourprofit.owner_id
+    # db_hourprofit.robot_id = hourprofit.robot_id
     db.commit()
     db.refresh(db_hourprofit)
     return db_hourprofit
@@ -154,8 +158,8 @@ def get_profits(db: _orm.Session, skip: int = 0, limit: int = 10):
     return db.query(_models.Profit).offset(skip).limit(limit).all()
 
 
-def create_profit(db: _orm.Session, profit: _schemas.ProfitCreate, user_id: int):
-    profit = _models.Profit(**profit.dict(), owner_id=user_id)
+def create_profit(db: _orm.Session, profit: _schemas.ProfitCreate, bot_id: int):
+    profit = _models.Profit(**profit.dict(), robot_id=bot_id)
     db.add(profit)
     db.commit()
     db.refresh(profit)
@@ -191,7 +195,7 @@ def update_profit(db: _orm.Session, profit_id: int, profit: _schemas.ProfitCreat
     db_profit.profit_per_grid = profit.profit_per_grid
     db_profit.mts_create = profit.mts_create
     db_profit.mts_update = profit.mts_update
-    db_profit.owner_id = profit.owner_id
+    # db_profit.robot_id = profit.robot_id
     db.commit()
     db.refresh(db_profit)
     return db_profit
