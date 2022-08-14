@@ -1,4 +1,5 @@
 version: "3.8"
+services:
   mariadb: &mariadb
     image: arm64v8/mariadb
     command:
@@ -50,17 +51,18 @@ version: "3.8"
       - gridbot-db
     environment:
       PMA_HOSTS: gridbot-db
-      PMA_ABSOLUTE_URI: https://gridbot.ezcoin.cc/pdm/
+      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
 
   app:
     container_name: app
     build: .
-    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    restart: always
+    # command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    command: bash -c "/app/bootstrap.sh"
     # command: bash -c "/app/bootstrap.sh" # then `docker exec -it app /bin/bash` to run uvicon, easier to debug
     volumes:
       - .:/app
     ports:
-      - 8000:8000
+      - "8000:8000"
     depends_on:
-      - db
-    restart: always
+      - gridbot-db

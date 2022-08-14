@@ -1,7 +1,26 @@
-# gridbot-db
+### install
+
+```
+$ git clone ...
+$ cd gridbot-db
+$ chmod +x bootstrap.sh
+$ docker build .
+$ docker-compose up -d
+```
+
+### create database from phpmyadmin
+
+```
+visit https://gridbot.ezcoin.cc/pdm/, create database `gridbot`
+
+$ docker exec -it app /bin/bash
+:/app# uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### gridbot-db
 
 Youtube:
-  https://www.youtube.com/watch?v=NH4VZaP3_9s&t=14s&ab_channel=VeryAcademy
+https://www.youtube.com/watch?v=NH4VZaP3_9s&t=14s&ab_channel=VeryAcademy
 
 ```
 $ python -m venv .venv
@@ -10,6 +29,7 @@ $ pip install -r requirements.txt
 ```
 
 ### db
+
 FastAPI with SQL (ORM) - https://www.youtube.com/watch?v=eltKL8kC160
 
 ```
@@ -19,6 +39,7 @@ FastAPI with SQL (ORM) - https://www.youtube.com/watch?v=eltKL8kC160
 ```
 
 ### db operation
+
 ```
 $ mysql -u root -p
 mysql> drop DATABASE gridbot;

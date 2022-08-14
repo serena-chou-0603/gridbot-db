@@ -3,9 +3,13 @@ import fastapi as _fastapi
 import sqlalchemy.orm as _orm
 import services as _services
 import schemas as _schemas
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+import os
 
+load_dotenv(".env")
+fernet = Fernet(os.environ.get("FERNET_KEY").encode())
 app = _fastapi.FastAPI()
-
 _services.create_database()
 
 
@@ -55,6 +59,10 @@ def create_bot(
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this user does not exist"
         )
+    bot.api_key = fernet.encrypt(bot.api_key).decode()
+    bot.secret_key = fernet.encrypt(bot.secret_key).decode()
+    print(f"bot.api_key= {bot.api_key}")
+    print(f"bot.secret_key= {bot.secret_key}")
     return _services.create_bot(db=db, bot=bot, user_id=user_id)
 
 
