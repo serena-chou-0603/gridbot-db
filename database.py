@@ -7,16 +7,17 @@ import os
 import requests
 
 # dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv('.env')
+load_dotenv(".env")
 
 ### PostgreSQL ###
-SQLALCHEMY_DATABASE_URL = os.environ.get('DATABASE_URL')
+SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
 
 ### MySQL ###
 # SQLALCHEMY_DATABASE_URL = "mysql://root:iS27037888@localhost:3306/gridbot"
 
 # MySQL engine = create_engine("mysql+pymysql://root@localhost:3306/test")
-engine = _sql.create_engine(SQLALCHEMY_DATABASE_URL)
+# pool_recycle=1 to solve the (2006, 'MySQL server has gone away') error
+engine = _sql.create_engine(SQLALCHEMY_DATABASE_URL, pool_recycle=1)
 
 ### SQLite ###
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./database.db"
@@ -26,7 +27,6 @@ engine = _sql.create_engine(SQLALCHEMY_DATABASE_URL)
 #     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 # )
 
-SessionLocal = _orm.sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+SessionLocal = _orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = _declarative.declarative_base()

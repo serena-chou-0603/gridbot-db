@@ -59,10 +59,12 @@ def create_bot(
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this user does not exist"
         )
-    bot.api_key = fernet.encrypt(bot.api_key).decode()
-    bot.secret_key = fernet.encrypt(bot.secret_key).decode()
-    print(f"bot.api_key= {bot.api_key}")
-    print(f"bot.secret_key= {bot.secret_key}")
+    #print(f"bot.api_key= {bot.api_key}")
+    #print(f"bot.secret_key= {bot.secret_key}")
+    bot.api_key = fernet.encrypt(bot.api_key.encode()).decode()
+    bot.secret_key = fernet.encrypt(bot.secret_key.encode()).decode()
+    #print(f"bot.api_key= {bot.api_key}")
+    #print(f"bot.secret_key= {bot.secret_key}")
     return _services.create_bot(db=db, bot=bot, user_id=user_id)
 
 
