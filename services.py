@@ -93,6 +93,18 @@ def update_bot(db: _orm.Session, bot_id: int, bot: _schemas.BotCreate):
     return db_bot
 
 
+def update_bot_by_account(db: _orm.Session, account: str, bot: _schemas.BotCreate):
+    db_bot = get_bot(db=db, account=account)
+    # print(f"services.py, update_bot_by_account(), bot= {bot}")
+    # print("db_bot.id= ", db_bot.id)
+    # print("bot.cover_range= ", bot.cover_range)
+    if bot.cover_range is not None:
+        db_bot.cover_range = bot.cover_range
+    db.commit()
+    db.refresh(db_bot)
+    return db_bot
+
+
 # ------------------------------------------------------------------------
 
 

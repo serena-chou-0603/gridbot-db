@@ -59,12 +59,12 @@ def create_bot(
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this user does not exist"
         )
-    #print(f"bot.api_key= {bot.api_key}")
-    #print(f"bot.secret_key= {bot.secret_key}")
+    # print(f"bot.api_key= {bot.api_key}")
+    # print(f"bot.secret_key= {bot.secret_key}")
     bot.api_key = fernet.encrypt(bot.api_key.encode()).decode()
     bot.secret_key = fernet.encrypt(bot.secret_key.encode()).decode()
-    #print(f"bot.api_key= {bot.api_key}")
-    #print(f"bot.secret_key= {bot.secret_key}")
+    # print(f"bot.api_key= {bot.api_key}")
+    # print(f"bot.secret_key= {bot.secret_key}")
     return _services.create_bot(db=db, bot=bot, user_id=user_id)
 
 
@@ -85,7 +85,6 @@ def read_bots(
 #        raise _fastapi.HTTPException(
 #            status_code=404, detail="sorry this profit does not exist"
 #        )
-#
 #    return bot
 
 
@@ -96,7 +95,6 @@ def read_bot(account: str, db: _orm.Session = _fastapi.Depends(_services.get_db)
         raise _fastapi.HTTPException(
             status_code=404, detail="sorry this profit does not exist"
         )
-
     return bot
 
 
@@ -109,10 +107,19 @@ def delete_bot(bot_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db
 @app.put("/bots/{bot_id}", response_model=_schemas.Bot)
 def update_bot(
     bot_id: int,
-    bot: _schemas.ProfitCreate,
+    bot: _schemas.BotCreate,
     db: _orm.Session = _fastapi.Depends(_services.get_db),
 ):
     return _services.update_bot(db=db, bot=bot, bot_id=bot_id)
+
+
+@app.put("/bots/update/{account}", response_model=_schemas.Bot)
+def update_bot_by_account(
+    account: str,
+    bot: _schemas.BotCreate,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    return _services.update_bot_by_account(db=db, bot=bot, account=account)
 
 
 # ------------------------------------------------

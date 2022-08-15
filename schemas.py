@@ -1,24 +1,26 @@
 from typing import List
 import datetime as _dt
 import pydantic as _pydantic
+from typing import Optional
 
 
 class _BotBase(_pydantic.BaseModel):
     account: str
-    symbol: str
-    position_size: float
-    grid_size: float
-    grid_mode: str
-    follow_up: bool
-    follow_down: bool
-    num_buy_grid_lines: int
-    num_sell_grid_lines: int
-    check_orders_frequency: int
-    api_key: str
-    secret_key: str
-    investment: float
-    start_date: _dt.datetime
-    start_price: float
+    symbol: Optional[str] = None
+    position_size: Optional[float] = None
+    grid_size: Optional[float] = None
+    cover_range: Optional[float] = None
+    grid_mode: Optional[str] = None
+    follow_up: Optional[bool] = None
+    follow_down: Optional[bool] = None
+    num_buy_grid_lines: Optional[int] = None
+    num_sell_grid_lines: Optional[int] = None
+    check_orders_frequency: Optional[int] = None
+    api_key: Optional[str] = None
+    secret_key: Optional[str] = None
+    investment: Optional[float] = None
+    start_date: Optional[_dt.datetime] = None
+    start_price: Optional[float] = None
     # ERROR date_created: _dt.datetime
     # ERROR date_last_updated: _dt.datetime
 
