@@ -1,10 +1,25 @@
 ### install
 
 ```
-$ git clone ...
+$ git clone https://github.com/serena-chou-0603/gridbot-db.git
 $ cd gridbot-db
 $ chmod +x bootstrap.sh
 $ docker build .
+```
+
+#### install for dev environment
+
+- change docker-compose.yml to use `command: bash -c "/app/bootstrap.sh" # debug mode`
+
+```
+$ docker-compose up -d
+```
+
+#### install for production environment
+
+- change docker-compose.yml to use `command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload" # production mode`
+
+```
 $ docker-compose up -d
 ```
 
