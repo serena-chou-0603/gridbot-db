@@ -42,7 +42,15 @@ def create_user(db: _orm.Session, user: _schemas.UserCreate):
 
 
 def get_bots(db: _orm.Session, skip: int = 0, limit: int = 10):
-    return db.query(_models.Bot).offset(skip).limit(limit).all()
+    # return db.query(_models.Bot).offset(skip).limit(limit).all()
+    # select only is_active bots
+    return (
+        db.query(_models.Bot)
+        .filter(_models.Bot.is_active == True)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def create_bot(db: _orm.Session, bot: _schemas.BotCreate, user_id: int):

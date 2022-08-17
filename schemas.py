@@ -6,6 +6,7 @@ from typing import Optional
 
 class _BotBase(_pydantic.BaseModel):
     account: str
+    is_active: Optional[bool] = None
     symbol: Optional[str] = None
     position_size: Optional[float] = None
     grid_size: Optional[float] = None
