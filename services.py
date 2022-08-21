@@ -1,5 +1,5 @@
+from sqlalchemy import and_
 import sqlalchemy.orm as _orm
-
 import models as _models
 import schemas as _schemas
 import database as _database
@@ -68,9 +68,17 @@ def create_bot(db: _orm.Session, bot: _schemas.BotCreate, user_id: int):
 #    return db.query(_models.Bot).filter(_models.Bot.account == account).first()
 def get_bot(db: _orm.Session, bot_id: int = -1, account: str = ""):
     if bot_id > 0:
-        return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+        return (
+            db.query(_models.Bot)
+            .filter(and_(_models.Bot.id == bot_id, _models.Bot.is_active == True))
+            .first()
+        )
     if account != "":
-        return db.query(_models.Bot).filter(_models.Bot.account == account).first()
+        return (
+            db.query(_models.Bot)
+            .filter(and_(_models.Bot.account == account, _models.Bot.is_active == True))
+            .first()
+        )
 
 
 def delete_bot(db: _orm.Session, bot_id: int):

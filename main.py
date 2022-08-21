@@ -1,4 +1,5 @@
 from typing import List
+import uvicorn
 import fastapi as _fastapi
 import sqlalchemy.orm as _orm
 import services as _services
@@ -235,3 +236,7 @@ def update_hourprofit(
     return _services.update_hourprofit(
         db=db, hourprofit=hourprofit, hourprofit_id=hourprofit_id
     )
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
