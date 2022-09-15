@@ -41,6 +41,97 @@ def create_user(db: _orm.Session, user: _schemas.UserCreate):
 # ------------------------------------------------------------------------
 
 
+def get_dcabots(db: _orm.Session, skip: int = 0, limit: int = 10):
+    # return db.query(_models.Bot).offset(skip).limit(limit).all()
+    # select only is_active bots
+    return (
+        db.query(_models.DCABot)
+        .filter(_models.DCABot.is_active == True)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def create_dcabot(db: _orm.Session, dcabot: _schemas.DCABotCreate, user_id: int):
+    dcabot = _models.DCABot(**dcabot.dict(), owner_id=user_id)
+    db.add(dcabot)
+    db.commit()
+    db.refresh(dcabot)
+    return dcabot
+
+
+# def get_bot(db: _orm.Session, bot_id: int):
+#    return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+#
+# def get_bot(db: _orm.Session, account: str):
+#    return db.query(_models.Bot).filter(_models.Bot.account == account).first()
+def get_dcabot(db: _orm.Session, dcabot_id: int = -1, account: str = ""):
+    if dcabot_id > 0:
+        return (
+            db.query(_models.DCABot)
+            .filter(
+                and_(_models.DCABot.id == dcabot_id, _models.DCABot.is_active == True)
+            )
+            .first()
+        )
+    if account != "":
+        return (
+            db.query(_models.DCABot)
+            .filter(
+                and_(
+                    _models.DCABot.account == account, _models.DCABot.is_active == True
+                )
+            )
+            .first()
+        )
+
+
+def delete_dcabot(db: _orm.Session, dcabot_id: int):
+    db.query(_models.DCABot).filter(_models.DCABot.id == dcabot_id).delete()
+    db.commit()
+
+
+def update_dcabot(db: _orm.Session, dcabot_id: int, dcabot: _schemas.DCABotCreate):
+    db_dcabot = get_bot(db=db, dcabot_id=dcabot_id)
+    db_dcabot.account = dcabot.account
+    db_dcabot.symbol = dcabot.symbol
+    db_dcabot.position_size = dcabot.position_size
+    db_dcabot.grid_size = dcabot.grid_size
+    db_dcabot.grid_mode = dcabot.grid_mode
+    db_dcabot.follow_up = dcabot.follow_up
+    db_dcabot.follow_down = dcabot.follow_down
+    db_dcabot.num_buy_grid_lines = dcabot.num_buy_grid_lines
+    db_dcabot.num_sell_grid_lines = dcabot.num_sell_grid_lines
+    db_bot.check_orders_frequency = dcabot.check_orders_frequency
+    db_dcabot.api_key = dcabot.api_key
+    db_dcabot.secret_key = dcabot.secret_key
+    db_dcabot.start_date = dcabot.start_date
+    db_dcabot.start_price = dcabot.start_price
+
+    db_dcabot.owner_id = dcabot.owner_id
+    db.commit()
+    db.refresh(db_dcabot)
+    return db_dcabot
+
+
+def update_dcabot_by_account(
+    db: _orm.Session, account: str, dcabot: _schemas.DCABotCreate
+):
+    db_dcabot = get_dcabot(db=db, account=account)
+    # print(f"services.py, update_bot_by_account(), bot= {bot}")
+    # print("db_bot.id= ", db_bot.id)
+    # print("bot.cover_range= ", bot.cover_range)
+    if dcabot.cover_range is not None:
+        db_dcabot.cover_range = dcabot.cover_range
+    db.commit()
+    db.refresh(db_dcabot)
+    return db_dcabot
+
+
+# ------------------------------------------------------------------------
+
+
 def get_bots(db: _orm.Session, skip: int = 0, limit: int = 10):
     # return db.query(_models.Bot).offset(skip).limit(limit).all()
     # select only is_active bots

@@ -44,6 +44,53 @@ class Bot(_BotBase):
 # -----------------------------------------------
 
 
+class _DCABotBase(_pydantic.BaseModel):
+    account: str
+    is_active: Optional[bool] = None
+    symbol: Optional[str] = None
+    base_size: Optional[float] = None
+    base_dollar: Optional[float] = None
+    take_profit_pct: Optional[float] = None
+    safety_pct: Optional[float] = None
+    safety_size_multiplier: Optional[float] = None
+    safety_range_multiplier: Optional[float] = None
+    safety_max_times: Optional[int] = 0
+    trading_fee: Optional[float] = None
+    use_existing_coin: Optional[bool] = False
+    dca_direction: Optional[str] = None
+    check_orders_frequency: Optional[int] = None
+
+    investment: Optional[float] = None
+    start_price: Optional[float] = None
+    start_date: Optional[float] = None
+
+    api_key: Optional[str] = None
+    secret_key: Optional[str] = None
+
+    start_date: Optional[_dt.datetime] = None
+    start_price: Optional[float] = None
+    # ERROR date_created: _dt.datetime
+    # ERROR date_last_updated: _dt.datetime
+
+
+class DCABotCreate(_DCABotBase):
+    pass
+
+
+class DCABot(_DCABotBase):
+    id: int
+    owner_id: int
+    date_created: _dt.datetime
+    date_last_updated: _dt.datetime
+
+    # default orm_mode = Fasle
+    class Config:
+        orm_mode = True
+
+
+# -----------------------------------------------
+
+
 class _ProfitBase(_pydantic.BaseModel):
     account: str
     symbol: str
@@ -118,3 +165,33 @@ class User(_UserBase):
 
     class Config:
         orm_mode = True
+
+
+# -----------------------------------------------
+
+
+class _DCATranBase(_pydantic.BaseModel):
+    safety_times: Optional[int] = None
+    side: Optional[str] = None
+    price: Optional[float] = None
+    size: Optional[float] = None
+    # ERROR date_created: _dt.datetime
+    # ERROR date_last_updated: _dt.datetime
+
+
+class DCATranCreate(_DCATranBase):
+    pass
+
+
+class DCATran(_DCATranBase):
+    id: int
+    robot_id: int
+    date_created: _dt.datetime
+    date_last_updated: _dt.datetime
+
+    # default orm_mode = Fasle
+    class Config:
+        orm_mode = True
+
+
+# -----------------------------------------------

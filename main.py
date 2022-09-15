@@ -14,7 +14,7 @@ app = _fastapi.FastAPI()
 _services.create_database()
 
 
-@app.post("/users/", response_model=_schemas.User)
+@app.post("/users/", response_model=_schemas.User, tags=["User Methods"])
 def create_user(
     user: _schemas.UserCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
@@ -26,7 +26,7 @@ def create_user(
     return _services.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=List[_schemas.User])
+@app.get("/users/", response_model=List[_schemas.User], tags=["User Methods"])
 def read_users(
     skip: int = 0,
     limit: int = 10,
@@ -36,7 +36,7 @@ def read_users(
     return users
 
 
-@app.get("/users/{user_id}", response_model=_schemas.User)
+@app.get("/users/{user_id}", response_model=_schemas.User, tags=["User Methods"])
 def read_user(user_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     db_user = _services.get_user(db=db, user_id=user_id)
     if db_user is None:
@@ -49,7 +49,92 @@ def read_user(user_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db
 # ------------------------------------------------
 
 
-@app.post("/users/{user_id}/bots/", response_model=_schemas.Bot)
+@app.post(
+    "/users/{user_id}/dcabots/", response_model=_schemas.DCABot, tags=["DCABot Methods"]
+)
+def create_dcabot(
+    user_id: int,
+    dcabot: _schemas.DCABotCreate,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    db_user = _services.get_user(db=db, user_id=user_id)
+    if db_user is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this user does not exist"
+        )
+    # print(f"bot.api_key= {bot.api_key}")
+    # print(f"bot.secret_key= {bot.secret_key}")
+    dcabot.api_key = fernet.encrypt(dcabot.api_key.encode()).decode()
+    dcabot.secret_key = fernet.encrypt(dcabot.secret_key.encode()).decode()
+    # print(f"bot.api_key= {bot.api_key}")
+    # print(f"bot.secret_key= {bot.secret_key}")
+    return _services.create_dcabot(db=db, dcabot=dcabot, user_id=user_id)
+
+
+@app.get("/dcabots/", response_model=List[_schemas.DCABot], tags=["DCABot Methods"])
+def read_dcabots(
+    skip: int = 0,
+    limit: int = 10,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    dcabots = _services.get_dcabots(db=db, skip=skip, limit=limit)
+    return dcabots
+
+
+# @app.get("/dcabots/{bot_id}", response_model=_schemas.DCABot)
+# def read_dcabot(bot_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+#    dcabot = _services.get_dcabot(db=db, dcabot_id=dcabot_id)
+#    if dcabot is None:
+#        raise _fastapi.HTTPException(
+#            status_code=404, detail="sorry this profit does not exist"
+#        )
+#    return dcabot
+
+
+@app.get("/dcabots/{account}", response_model=_schemas.DCABot, tags=["DCABot Methods"])
+def read_bot(account: str, db: _orm.Session = _fastapi.Depends(_services.get_db)):
+    dcabot = _services.get_dcabot(db=db, account=account)
+    if dcabot is None:
+        raise _fastapi.HTTPException(
+            status_code=404, detail="sorry this profit does not exist"
+        )
+    return dcabot
+
+
+@app.delete("/dcabots/{bot_id}", tags=["DCABot Methods"])
+def delete_dcabot(
+    dcabot_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)
+):
+    _services.delete_dcabot(db=db, dcabot_id=dcabot_id)
+    return {"message": f"successfully deleted bot with id: {dcabot_id}"}
+
+
+@app.put(
+    "/dcabots/{dcabot_id}", response_model=_schemas.DCABot, tags=["DCABot Methods"]
+)
+def update_dcabot(
+    dcabot_id: int,
+    dcabot: _schemas.BotCreate,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    return _services.update_dcabot(db=db, dcabot=dcabot, dcabot_id=dcabot_id)
+
+
+@app.put(
+    "/dcabots/update/{account}", response_model=_schemas.DCABot, tags=["DCABot Methods"]
+)
+def update_dcabot_by_account(
+    account: str,
+    dcabot: _schemas.BotCreate,
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    return _services.update_dcabot_by_account(db=db, dcabot=dcabot, account=account)
+
+
+# ------------------------------------------------
+
+
+@app.post("/users/{user_id}/bots/", response_model=_schemas.Bot, tags=["Bot Methods"])
 def create_bot(
     user_id: int,
     bot: _schemas.BotCreate,
@@ -69,7 +154,7 @@ def create_bot(
     return _services.create_bot(db=db, bot=bot, user_id=user_id)
 
 
-@app.get("/bots/", response_model=List[_schemas.Bot])
+@app.get("/bots/", response_model=List[_schemas.Bot], tags=["Bot Methods"])
 def read_bots(
     skip: int = 0,
     limit: int = 10,
@@ -89,7 +174,7 @@ def read_bots(
 #    return bot
 
 
-@app.get("/bots/{account}", response_model=_schemas.Bot)
+@app.get("/bots/{account}", response_model=_schemas.Bot, tags=["Bot Methods"])
 def read_bot(account: str, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     bot = _services.get_bot(db=db, account=account)
     if bot is None:
@@ -99,13 +184,13 @@ def read_bot(account: str, db: _orm.Session = _fastapi.Depends(_services.get_db)
     return bot
 
 
-@app.delete("/bots/{bot_id}")
+@app.delete("/bots/{bot_id}", tags=["Bot Methods"])
 def delete_bot(bot_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
-    _services.delete_bot(db=db, profit_id=bot_id)
+    _services.delete_bot(db=db, bot_id=bot_id)
     return {"message": f"successfully deleted bot with id: {bot_id}"}
 
 
-@app.put("/bots/{bot_id}", response_model=_schemas.Bot)
+@app.put("/bots/{bot_id}", response_model=_schemas.Bot, tags=["Bot Methods"])
 def update_bot(
     bot_id: int,
     bot: _schemas.BotCreate,
@@ -114,7 +199,7 @@ def update_bot(
     return _services.update_bot(db=db, bot=bot, bot_id=bot_id)
 
 
-@app.put("/bots/update/{account}", response_model=_schemas.Bot)
+@app.put("/bots/update/{account}", response_model=_schemas.Bot, tags=["Bot Methods"])
 def update_bot_by_account(
     account: str,
     bot: _schemas.BotCreate,
@@ -126,7 +211,9 @@ def update_bot_by_account(
 # ------------------------------------------------
 
 
-@app.post("/bots/{bot_id}/profits/", response_model=_schemas.Profit)
+@app.post(
+    "/bots/{bot_id}/profits/", response_model=_schemas.Profit, tags=["Profit Methods"]
+)
 def create_profit(
     bot_id: int,
     profit: _schemas.ProfitCreate,
@@ -141,7 +228,7 @@ def create_profit(
     return _services.create_profit(db=db, profit=profit, bot_id=bot_id)
 
 
-@app.get("/profits/", response_model=List[_schemas.Profit])
+@app.get("/profits/", response_model=List[_schemas.Profit], tags=["Profit Methods"])
 def read_profits(
     skip: int = 0,
     limit: int = 10,
@@ -151,7 +238,9 @@ def read_profits(
     return profits
 
 
-@app.get("/profits/{profit_id}", response_model=_schemas.Profit)
+@app.get(
+    "/profits/{profit_id}", response_model=_schemas.Profit, tags=["Profit Methods"]
+)
 def read_profit(profit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)):
     profit = _services.get_profit(db=db, profit_id=profit_id)
     if profit is None:
@@ -162,7 +251,7 @@ def read_profit(profit_id: int, db: _orm.Session = _fastapi.Depends(_services.ge
     return profit
 
 
-@app.delete("/profits/{profit_id}")
+@app.delete("/profits/{profit_id}", tags=["Profit Methods"])
 def delete_profit(
     profit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
@@ -170,7 +259,9 @@ def delete_profit(
     return {"message": f"successfully deleted profit with id: {profit_id}"}
 
 
-@app.put("/profits/{profit_id}", response_model=_schemas.Profit)
+@app.put(
+    "/profits/{profit_id}", response_model=_schemas.Profit, tags=["Profit Methods"]
+)
 def update_profit(
     profit_id: int,
     profit: _schemas.ProfitCreate,
@@ -182,7 +273,11 @@ def update_profit(
 # ------------------------------------------------
 
 
-@app.post("/bots/{bot_id}/hourprofits/", response_model=_schemas.HourProfit)
+@app.post(
+    "/bots/{bot_id}/hourprofits/",
+    response_model=_schemas.HourProfit,
+    tags=["HourProfit Methods"],
+)
 def create_hourprofit(
     bot_id: int,
     hourprofit: _schemas.ProfitCreate,
@@ -196,7 +291,11 @@ def create_hourprofit(
     return _services.create_hourprofit(db=db, hourprofit=hourprofit, bot_id=bot_id)
 
 
-@app.get("/hourprofits/", response_model=List[_schemas.HourProfit])
+@app.get(
+    "/hourprofits/",
+    response_model=List[_schemas.HourProfit],
+    tags=["HourProfit Methods"],
+)
 def read_hourprofits(
     skip: int = 0,
     limit: int = 10,
@@ -206,7 +305,11 @@ def read_hourprofits(
     return hourprofits
 
 
-@app.get("/hourprofits/{hourprofit_id}", response_model=_schemas.HourProfit)
+@app.get(
+    "/hourprofits/{hourprofit_id}",
+    response_model=_schemas.HourProfit,
+    tags=["HourProfit Methods"],
+)
 def read_hourprofit(
     hourprofit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
@@ -219,7 +322,7 @@ def read_hourprofit(
     return hourprofit
 
 
-@app.delete("/hourprofits/{hourprofit_id}")
+@app.delete("/hourprofits/{hourprofit_id}", tags=["HourProfit Methods"])
 def delete_hourprofit(
     hourprofit_id: int, db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
@@ -227,7 +330,11 @@ def delete_hourprofit(
     return {"message": f"successfully deleted hourprofit with id: {hourprofit_id}"}
 
 
-@app.put("/hourprofits/{hourprofit_id}", response_model=_schemas.HourProfit)
+@app.put(
+    "/hourprofits/{hourprofit_id}",
+    response_model=_schemas.HourProfit,
+    tags=["HourProfit Methods"],
+)
 def update_hourprofit(
     hourprofit_id: int,
     hourprofit: _schemas.ProfitCreate,

@@ -16,6 +16,7 @@ class User(_database.Base):
     # profits = _orm.relationship("Profit", back_populates="owner")
     # hourprofits = _orm.relationship("HourProfit", back_populates="owner")
     bots = _orm.relationship("Bot", back_populates="owner")
+    dcabots = _orm.relationship("DCABot", back_populates="owner")
 
 
 class Bot(_database.Base):
@@ -46,6 +47,39 @@ class Bot(_database.Base):
 
     profits = _orm.relationship("Profit", back_populates="robot")
     hourprofits = _orm.relationship("HourProfit", back_populates="robot")
+
+
+class DCABot(_database.Base):
+    __tablename__ = "dcabots"
+    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    is_active = _sql.Column(_sql.Boolean, default=True)
+    account = _sql.Column(_sql.String(50))
+    symbol = _sql.Column(_sql.String(50))
+    base_size = _sql.Column(_sql.Float, default=0)
+    base_dollar = _sql.Column(_sql.Float, default=0)
+    take_profit_pct = _sql.Column(_sql.Float, default=0)
+    safety_pct = _sql.Column(_sql.Float, default=0)
+    safety_size_multiplier = _sql.Column(_sql.String(20))
+    safety_range_multiplier = _sql.Column(_sql.Integer, default=0)
+    safety_max_times = _sql.Column(_sql.Integer, default=0)
+    trading_fee = _sql.Column(_sql.Float, default=0)
+    use_existing_coin = _sql.Column(_sql.Boolean, default=False)
+    dca_direction = _sql.Column(_sql.String(50))
+    check_orders_frequency = _sql.Column(_sql.String(10), default="LONG")
+
+    investment = _sql.Column(_sql.Float, default=0)
+    start_price = _sql.Column(_sql.Float, default=0)
+    start_date = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+
+    api_key = _sql.Column(_sql.String(140))
+    secret_key = _sql.Column(_sql.String(140))
+    date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+
+    owner = _orm.relationship("User", back_populates="dcabots")
+
+    dcatrans = _orm.relationship("DCATran", back_populates="robot")
 
 
 class Profit(_database.Base):
@@ -106,3 +140,19 @@ class HourProfit(_database.Base):
     # owner = _orm.relationship("User", back_populates="hourprofits")
     robot_id = _sql.Column(_sql.Integer, _sql.ForeignKey("bots.id"))
     robot = _orm.relationship("Bot", back_populates="hourprofits")
+
+
+class DCATran(_database.Base):
+    __tablename__ = "dcatrans"
+    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    safety_times = _sql.Column(_sql.Integer, default=0)
+    side = _sql.Column(_sql.String(4))
+    price = _sql.Column(_sql.Float, default=0)
+    size = _sql.Column(_sql.Float, default=0)
+    date_created = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    date_last_updated = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+
+    # owner_id = _sql.Column(_sql.Integer, _sql.ForeignKey("users.id"))
+    # owner = _orm.relationship("User", back_populates="profits")
+    robot_id = _sql.Column(_sql.Integer, _sql.ForeignKey("dcabots.id"))
+    robot = _orm.relationship("DCABot", back_populates="dcatrans")
