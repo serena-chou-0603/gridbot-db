@@ -36,6 +36,7 @@ MANIFEST
 
 .seed.sh
 .seed2.sh
+.seed*.sh
 data/
 
 # Installer logs

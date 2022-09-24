@@ -3,6 +3,10 @@ import sqlalchemy.orm as _orm
 import models as _models
 import schemas as _schemas
 import database as _database
+from cryptography.fernet import Fernet
+import os
+
+fernet = Fernet(os.environ.get("FERNET_KEY").encode())
 
 
 def create_database():
@@ -54,7 +58,7 @@ def get_dcabots(db: _orm.Session, skip: int = 0, limit: int = 10):
 
 
 def create_dcabot(db: _orm.Session, dcabot: _schemas.DCABotCreate, user_id: int):
-    dcabot = _models.DCABot(**dcabot.dict(), owner_id=user_id)
+    dcabot = _models.DCABot(**dcabot.dict(), user_id=user_id)
     db.add(dcabot)
     db.commit()
     db.refresh(dcabot)
@@ -95,21 +99,25 @@ def delete_dcabot(db: _orm.Session, dcabot_id: int):
 def update_dcabot(db: _orm.Session, dcabot_id: int, dcabot: _schemas.DCABotCreate):
     db_dcabot = get_bot(db=db, dcabot_id=dcabot_id)
     db_dcabot.account = dcabot.account
+    db_dcabot.sub_account = dcabot.sub_account
     db_dcabot.symbol = dcabot.symbol
-    db_dcabot.position_size = dcabot.position_size
-    db_dcabot.grid_size = dcabot.grid_size
-    db_dcabot.grid_mode = dcabot.grid_mode
-    db_dcabot.follow_up = dcabot.follow_up
-    db_dcabot.follow_down = dcabot.follow_down
-    db_dcabot.num_buy_grid_lines = dcabot.num_buy_grid_lines
-    db_dcabot.num_sell_grid_lines = dcabot.num_sell_grid_lines
-    db_bot.check_orders_frequency = dcabot.check_orders_frequency
+    db_dcabot.base_size = dcabot.base_size
+    db_dcabot.base_dollar = dcabot.base_dollar
+    db_dcabot.take_profit_pct = dcabot.take_profit_pct
+    db_dcabot.safety_pct = dcabot.safety_pct
+    db_dcabot.safety_size_multiplier = dcabot.safety_size_multiplier
+    db_dcabot.safety_range_multiplier = dcabot.safety_range_multiplier
+    db_dcabot.start_mode = dcabot.start_mode
+    db_dcabot.trading_fee = dcabot.trading_fee
+    db_dcabot.use_existing_coin = dcabot.use_existing_coin
+    db_dcabot.paper_trading = dcabot.paper_trading
+    db_dcabot.check_orders_frequency = dcabot.check_orders_frequency
+    db_dcabot.investment = dcabot.investment
     db_dcabot.api_key = dcabot.api_key
     db_dcabot.secret_key = dcabot.secret_key
     db_dcabot.start_date = dcabot.start_date
     db_dcabot.start_price = dcabot.start_price
-
-    db_dcabot.owner_id = dcabot.owner_id
+    db_dcabot.user_id = dcabot.user_id
     db.commit()
     db.refresh(db_dcabot)
     return db_dcabot
@@ -122,8 +130,70 @@ def update_dcabot_by_account(
     # print(f"services.py, update_bot_by_account(), bot= {bot}")
     # print("db_bot.id= ", db_bot.id)
     # print("bot.cover_range= ", bot.cover_range)
-    if dcabot.cover_range is not None:
-        db_dcabot.cover_range = dcabot.cover_range
+    db_dcabot.sub_account = (
+        dcabot.sub_account if dcabot.sub_account is not None else db_dcabot.sub_account
+    )
+    db_dcabot.symbol = dcabot.symbol if dcabot.symbol is not None else db_dcabot.symbol
+    db_dcabot.base_size = (
+        dcabot.base_size if dcabot.base_size is not None else db_dcabot.base_size
+    )
+    db_dcabot.base_dollar = (
+        dcabot.base_dollar if dcabot.base_dollar is not None else db_dcabot.base_dollar
+    )
+    db_dcabot.take_profit_pct = (
+        dcabot.take_profit_pct
+        if dcabot.take_profit_pct is not None
+        else db_dcabot.take_profit_pct
+    )
+    db_dcabot.safety_pct = (
+        dcabot.safety_pct if dcabot.safety_pct is not None else db_dcabot.safety_pct
+    )
+    db_dcabot.safety_size_multiplier = (
+        dcabot.safety_size_multiplier
+        if dcabot.safety_size_multiplier is not None
+        else db_dcabot.safety_size_multiplier
+    )
+    db_dcabot.safety_range_multiplier = (
+        dcabot.safety_range_multiplier
+        if dcabot.safety_range_multiplier is not None
+        else db_dcabot.safety_range_multiplier
+    )
+    db_dcabot.start_mode = (
+        dcabot.start_mode if dcabot.start_mode is not None else db_dcabot.start_mode
+    )
+    db_dcabot.trading_fee = (
+        dcabot.trading_fee if dcabot.trading_fee is not None else db_dcabot.trading_fee
+    )
+    db_dcabot.use_existing_coin = (
+        dcabot.use_existing_coin
+        if dcabot.use_existing_coin is not None
+        else db_dcabot.use_existing_coin
+    )
+    db_dcabot.paper_trading = (
+        dcabot.paper_trading
+        if dcabot.paper_trading is not None
+        else db_dcabot.paper_trading
+    )
+    db_dcabot.check_orders_frequency = (
+        dcabot.check_orders_frequency
+        if dcabot.check_orders_frequency is not None
+        else db_dcabot.check_orders_frequency
+    )
+    db_dcabot.investment = (
+        dcabot.investment if dcabot.investment is not None else db_dcabot.investment
+    )
+    db_dcabot.api_key = (
+        dcabot.api_key if dcabot.api_key is not None else db_dcabot.api_key
+    )
+    db_dcabot.secret_key = (
+        dcabot.secret_key if dcabot.secret_key is not None else db_dcabot.secret_key
+    )
+    db_dcabot.start_date = (
+        dcabot.start_date if dcabot.start_date is not None else db_dcabot.start_date
+    )
+    db_dcabot.start_price = (
+        dcabot.start_price if dcabot.start_price is not None else db_dcabot.start_price
+    )
     db.commit()
     db.refresh(db_dcabot)
     return db_dcabot
@@ -318,6 +388,105 @@ def update_profit(db: _orm.Session, profit_id: int, profit: _schemas.ProfitCreat
     db.commit()
     db.refresh(db_profit)
     return db_profit
+
+
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+
+
+def get_dcatrans(db: _orm.Session, skip: int = 0, limit: int = 10):
+    # return db.query(_models.Bot).offset(skip).limit(limit).all()
+    # select only is_active bots
+    return (
+        db.query(_models.DCATran)
+        # .filter(_models.DCATran.is_active == True)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def create_dcatran(db: _orm.Session, dcatran: _schemas.DCATranCreate, dcabot_id: int):
+    dcatran = _models.DCATran(**dcatran.dict(), dcabot_id=dcabot_id)
+    db.add(dcatran)
+    db.commit()
+    db.refresh(dcatran)
+    return dcatran
+
+
+def get_dcatran_orderid(db: _orm.Session, dcabot_id: int, order_id: int):
+    if dcabot_id > 0:
+        return (
+            db.query(_models.DCATran)
+            .filter(
+                and_(
+                    _models.DCATran.dcabot_id == dcabot_id,
+                    _models.DCATran.order_id == order_id,
+                )
+            )
+            .order_by(_models.DCATran.id.desc())
+            .first()
+        )
+
+
+# def get_bot(db: _orm.Session, bot_id: int):
+#    return db.query(_models.Bot).filter(_models.Bot.id == bot_id).first()
+#
+# def get_bot(db: _orm.Session, account: str):
+#    return db.query(_models.Bot).filter(_models.Bot.account == account).first()
+def get_dcatran(db: _orm.Session, dcatran_id: int = -1, account: str = ""):
+    if dcatran_id > 0:
+        return (
+            db.query(_models.DCATran)
+            .filter(and_(_models.DCATran.id == dcatran_id))
+            .first()
+        )
+    if account != "":
+        return (
+            db.query(_models.DCATran)
+            .filter(
+                and_(
+                    _models.DCATran.account == account,
+                    _models.DCATran.is_active == True,
+                )
+            )
+            .first()
+        )
+
+
+def delete_dcatran(db: _orm.Session, dcatran_id: int):
+    db.query(_models.DCATran).filter(_models.DCATran.id == dcatran_id).delete()
+    db.commit()
+
+
+def update_dcatran(db: _orm.Session, dcatran_id: int, dcatran: _schemas.DCATranCreate):
+    db_dcatran = get_dcatran(db=db, dcatran_id=dcatran_id)
+    db_dcatran.deal_id = dcatran.deal_id
+    db_dcatran.safety_times = dcatran.safety_times
+    db_dcatran.side = dcatran.side
+    db_dcatran.price = dcatran.price
+    db_dcatran.status = dcatran.status
+    db_dcatran.profit = dcatran.profit
+    db_dcatran.date_created = dcatran.date_created
+    db_dcatran.date_last_updated = dcatran.date_last_updated
+    db_dcatran.dcabot_id = dcatran.dcabot_id
+    db.commit()
+    db.refresh(db_dcatran)
+    return db_dcatran
+
+
+def update_dcatran_by_account(
+    db: _orm.Session, account: str, dcatran: _schemas.DCATranCreate
+):
+    db_dcatran = get_dcatran(db=db, account=account)
+    # print(f"services.py, update_bot_by_account(), bot= {bot}")
+    # print("db_bot.id= ", db_bot.id)
+    # print("bot.cover_range= ", bot.cover_range)
+    if dcatran.cover_range is not None:
+        db_dcatran.cover_range = dcatran.cover_range
+    db.commit()
+    db.refresh(db_dcatran)
+    return db_dcatran
 
 
 # ------------------------------------------------------------------------

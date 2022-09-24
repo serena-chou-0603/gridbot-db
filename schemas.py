@@ -46,17 +46,21 @@ class Bot(_BotBase):
 
 class _DCABotBase(_pydantic.BaseModel):
     account: str
+    sub_account: str
     is_active: Optional[bool] = None
     symbol: Optional[str] = None
     base_size: Optional[float] = None
     base_dollar: Optional[float] = None
     take_profit_pct: Optional[float] = None
     safety_pct: Optional[float] = None
+    safety_dollar: Optional[float] = None
     safety_size_multiplier: Optional[float] = None
     safety_range_multiplier: Optional[float] = None
-    safety_max_times: Optional[int] = 0
+    safety_max_times: Optional[int] = None
+    start_mode: Optional[str] = None
     trading_fee: Optional[float] = None
-    use_existing_coin: Optional[bool] = False
+    use_existing_coin: Optional[bool] = None
+    paper_trading: Optional[bool] = None
     dca_direction: Optional[str] = None
     check_orders_frequency: Optional[int] = None
 
@@ -79,7 +83,7 @@ class DCABotCreate(_DCABotBase):
 
 class DCABot(_DCABotBase):
     id: int
-    owner_id: int
+    user_id: int
     date_created: _dt.datetime
     date_last_updated: _dt.datetime
 
@@ -171,10 +175,14 @@ class User(_UserBase):
 
 
 class _DCATranBase(_pydantic.BaseModel):
+    deal_id: Optional[int] = None
     safety_times: Optional[int] = None
+    order_id: Optional[str] = None
     side: Optional[str] = None
     price: Optional[float] = None
     size: Optional[float] = None
+    status: Optional[str] = None
+    profit: Optional[float] = None
     # ERROR date_created: _dt.datetime
     # ERROR date_last_updated: _dt.datetime
 
@@ -185,7 +193,7 @@ class DCATranCreate(_DCATranBase):
 
 class DCATran(_DCATranBase):
     id: int
-    robot_id: int
+    dcabot_id: int
     date_created: _dt.datetime
     date_last_updated: _dt.datetime
 
