@@ -73,6 +73,7 @@ class DCABot(_database.Base):
     use_existing_coin = _sql.Column(_sql.Boolean, default=False)
     paper_trading = _sql.Column(_sql.Boolean, default=False)
     dca_direction = _sql.Column(_sql.String(50))
+    deal_wait_seconds = _sql.Column(_sql.Float, default=0)
     check_orders_frequency = _sql.Column(_sql.String(10), default="LONG")
 
     investment = _sql.Column(_sql.Float, default=0)

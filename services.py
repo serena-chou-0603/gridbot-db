@@ -111,6 +111,8 @@ def update_dcabot(db: _orm.Session, dcabot_id: int, dcabot: _schemas.DCABotCreat
     db_dcabot.trading_fee = dcabot.trading_fee
     db_dcabot.use_existing_coin = dcabot.use_existing_coin
     db_dcabot.paper_trading = dcabot.paper_trading
+    db_dcabot.dca_direction = dcabot.dca_direction
+    db_dcabot.deal_wait_seconds = dcabot.deal_wait_seconds
     db_dcabot.check_orders_frequency = dcabot.check_orders_frequency
     db_dcabot.investment = dcabot.investment
     db_dcabot.api_key = dcabot.api_key

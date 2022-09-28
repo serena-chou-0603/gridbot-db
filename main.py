@@ -27,5 +27,12 @@ app.include_router(profitsRouter)
 app.include_router(hourprofitsRouter)
 
 
+@app.post("/webhook", tags=["webhook"])
+async def webhook(request: _fastapi.Request):
+    body = await request.json()
+    print(body)
+    return body
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

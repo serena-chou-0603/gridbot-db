@@ -62,9 +62,10 @@ mysql> create database `gridbot` DEFAULT CHARACTER SET utf8 COLLATE utf8_general
 ```
 
 ```
-scp database.py dchou2006_1:/home/ubuntu/gridbit-db/
-scp main.py dchou2006_1:/home/ubuntu/gridbot-db/
-scp models.py dchou2006_1:/home/ubuntu/gridbot-db/
-scp schemas.py dchou2006_1:/home/ubuntu/gridbot-db/
-scp services.py dchou2006_1:/home/ubuntu/gridbot-db/
+scp database.py tokyo_01:/home/ubuntu/python/gridbot-db/
+scp main.py tokyo_01:/home/ubuntu/python/gridbot-db/
+scp models.py tokyo_01:/home/ubuntu/python/gridbot-db/
+scp schemas.py tokyo_01:/home/ubuntu/python/gridbot-db/
+scp services.py tokyo_01:/home/ubuntu/python/gridbot-db/
+scp -r routers/ tokyo_01:/home/ubuntu/python/gridbot-db/
 ```
