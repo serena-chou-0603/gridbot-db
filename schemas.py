@@ -62,7 +62,7 @@ class _DCABotBase(_pydantic.BaseModel):
     use_existing_coin: Optional[bool] = None
     paper_trading: Optional[bool] = None
     dca_direction: Optional[str] = None
-    deal_wait_seconds: Optional[bool] = None
+    deal_wait_seconds: Optional[float] = None
     check_orders_frequency: Optional[int] = None
 
     investment: Optional[float] = None
