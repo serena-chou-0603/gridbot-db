@@ -116,6 +116,8 @@ def update_dcabot(db: _orm.Session, dcabot_id: int, dcabot: _schemas.DCABotCreat
     db_dcabot.dca_direction = dcabot.dca_direction
     db_dcabot.deal_wait_seconds = dcabot.deal_wait_seconds
     db_dcabot.check_orders_frequency = dcabot.check_orders_frequency
+    db_dcabot.platform = dcabot.platform
+    db_dcabot.supervisor = dcabot.supervisor
     db_dcabot.investment = dcabot.investment
     db_dcabot.api_key = dcabot.api_key
     db_dcabot.secret_key = dcabot.secret_key

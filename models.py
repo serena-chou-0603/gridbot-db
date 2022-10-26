@@ -76,6 +76,8 @@ class DCABot(_database.Base):
     dca_direction = _sql.Column(_sql.String(50))
     deal_wait_seconds = _sql.Column(_sql.Float, default=0)
     check_orders_frequency = _sql.Column(_sql.String(10), default="LONG")
+    platform = _sql.Column(_sql.String(12))
+    supervisor = _sql.Column(_sql.String(20))
 
     investment = _sql.Column(_sql.Float, default=0)
     start_price = _sql.Column(_sql.Float, default=0)
