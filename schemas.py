@@ -64,7 +64,7 @@ class _DCABotBase(_pydantic.BaseModel):
     paper_trading: Optional[bool] = None
     dca_direction: Optional[str] = None
     deal_wait_seconds: Optional[float] = None
-    check_orders_frequency: Optional[int] = None
+    check_orders_frequency: Optional[float] = None
     platform: Optional[str] = None
     supervisor: Optional[str] = None
 

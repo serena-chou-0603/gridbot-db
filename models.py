@@ -75,7 +75,7 @@ class DCABot(_database.Base):
     paper_trading = _sql.Column(_sql.Boolean, default=False)
     dca_direction = _sql.Column(_sql.String(50))
     deal_wait_seconds = _sql.Column(_sql.Float, default=0)
-    check_orders_frequency = _sql.Column(_sql.String(10), default="LONG")
+    check_orders_frequency = _sql.Column(_sql.Float, default=0)
     platform = _sql.Column(_sql.String(12))
     supervisor = _sql.Column(_sql.String(20))
 
