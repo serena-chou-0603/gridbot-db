@@ -6,6 +6,7 @@ import schemas as _schemas
 
 usersRouter = _fastapi.APIRouter()
 
+
 @usersRouter.post("/users/", response_model=_schemas.User, tags=["User Methods"])
 def create_user(
     user: _schemas.UserCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)

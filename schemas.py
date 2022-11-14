@@ -163,12 +163,14 @@ class _UserBase(_pydantic.BaseModel):
 
 
 class UserCreate(_UserBase):
-    password: str
+    password: Optional[str] = None
+    chat_id: Optional[str] = None
 
 
 class User(_UserBase):
     id: int
     is_active: bool
+    chat_id: str
     profits: List[Profit] = []
 
     class Config:

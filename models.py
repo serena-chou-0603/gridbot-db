@@ -12,6 +12,7 @@ class User(_database.Base):
     email = _sql.Column(_sql.String(255), unique=True)
     hashed_password = _sql.Column(_sql.String(255))
     is_active = _sql.Column(_sql.Boolean, default=True)
+    chat_id = _sql.Column(_sql.String(10))
 
     # profits = _orm.relationship("Profit", back_populates="owner")
     # hourprofits = _orm.relationship("HourProfit", back_populates="owner")
