@@ -58,6 +58,7 @@ class _DCABotBase(_pydantic.BaseModel):
     safety_range_multiplier: Optional[float] = None
     safety_max_times: Optional[int] = None
     num_orders: Optional[int] = None
+    leverage: Optional[int] = None
     start_mode: Optional[str] = None
     trading_fee: Optional[float] = None
     use_existing_coin: Optional[bool] = None

@@ -70,6 +70,7 @@ class DCABot(_database.Base):
     safety_range_multiplier = _sql.Column(_sql.Integer, default=0)
     safety_max_times = _sql.Column(_sql.Integer, default=0)
     num_orders = _sql.Column(_sql.Integer, default=4)
+    leverage = _sql.Column(_sql.Integer, default=20)
     start_mode = _sql.Column(_sql.String(30))
     trading_fee = _sql.Column(_sql.Float, default=0)
     use_existing_coin = _sql.Column(_sql.Boolean, default=False)

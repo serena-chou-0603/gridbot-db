@@ -109,6 +109,7 @@ def update_dcabot(db: _orm.Session, dcabot_id: int, dcabot: _schemas.DCABotCreat
     db_dcabot.safety_range_multiplier = dcabot.safety_range_multiplier
     db_dcabot.safety_max_times = dcabot.safety_max_times
     db_dcabot.num_orders = dcabot.num_orders
+    db_dcabot.leverage = dcabot.leverage
     db_dcabot.start_mode = dcabot.start_mode
     db_dcabot.trading_fee = dcabot.trading_fee
     db_dcabot.use_existing_coin = dcabot.use_existing_coin
