@@ -107,17 +107,22 @@ def update_dcabot(db: _orm.Session, dcabot_id: int, dcabot: _schemas.DCABotCreat
     db_dcabot.safety_pct = dcabot.safety_pct
     db_dcabot.safety_size_multiplier = dcabot.safety_size_multiplier
     db_dcabot.safety_range_multiplier = dcabot.safety_range_multiplier
+    db_dcabot.safety_range_start = dcabot.safety_range_start
     db_dcabot.safety_max_times = dcabot.safety_max_times
     db_dcabot.num_orders = dcabot.num_orders
     db_dcabot.leverage = dcabot.leverage
+    db_dcabot.position_mode = dcabot.position_mode
     db_dcabot.start_mode = dcabot.start_mode
     db_dcabot.trading_fee = dcabot.trading_fee
     db_dcabot.use_existing_coin = dcabot.use_existing_coin
     db_dcabot.paper_trading = dcabot.paper_trading
     db_dcabot.dca_direction = dcabot.dca_direction
     db_dcabot.deal_wait_seconds = dcabot.deal_wait_seconds
+    db_dcabot.deal_drawdown_pct = dcabot.deal_drawdown_pct
+    db_dcabot.stop_loss_pct = dcabot.stop_loss_pct
     db_dcabot.check_orders_frequency = dcabot.check_orders_frequency
     db_dcabot.platform = dcabot.platform
+    db_dcabot.sandbox = dcabot.sandbox
     db_dcabot.supervisor = dcabot.supervisor
     db_dcabot.investment = dcabot.investment
     db_dcabot.api_key = dcabot.api_key
@@ -164,6 +169,11 @@ def update_dcabot_by_account(
         dcabot.safety_range_multiplier
         if dcabot.safety_range_multiplier is not None
         else db_dcabot.safety_range_multiplier
+    )
+    db_dcabot.safety_range_start = (
+        dcabot.safety_range_start
+        if dcabot.safety_range_start is not None
+        else db_dcabot.safety_range_start
     )
     db_dcabot.start_mode = (
         dcabot.start_mode if dcabot.start_mode is not None else db_dcabot.start_mode

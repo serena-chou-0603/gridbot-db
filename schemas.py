@@ -56,19 +56,23 @@ class _DCABotBase(_pydantic.BaseModel):
     safety_dollar: Optional[float] = None
     safety_size_multiplier: Optional[float] = None
     safety_range_multiplier: Optional[float] = None
+    safety_range_start: Optional[float] = None
     safety_max_times: Optional[int] = None
     num_orders: Optional[int] = None
     leverage: Optional[int] = None
+    position_mode: Optional[str] = None
     start_mode: Optional[str] = None
     trading_fee: Optional[float] = None
     use_existing_coin: Optional[bool] = None
     paper_trading: Optional[bool] = None
     dca_direction: Optional[str] = None
+    deal_drawdown_pct: Optional[float] = None
     deal_wait_seconds: Optional[float] = None
+    stop_loss_pct: Optional[float] = None
     check_orders_frequency: Optional[float] = None
     platform: Optional[str] = None
+    sandbox: Optional[bool] = None
     supervisor: Optional[str] = None
-
     investment: Optional[float] = None
     start_price: Optional[float] = None
     start_date: Optional[float] = None
