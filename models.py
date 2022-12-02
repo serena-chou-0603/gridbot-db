@@ -165,7 +165,7 @@ class DCATran(_database.Base):
     id = _sql.Column(_sql.Integer, primary_key=True, index=True)
     deal_id = _sql.Column(_sql.Integer, index=True)
     safety_times = _sql.Column(_sql.Integer, default=0)
-    order_id = _sql.Column(_sql.String(12))
+    order_id = _sql.Column(_sql.String(36))
     side = _sql.Column(_sql.String(4))
     price = _sql.Column(_sql.Float, default=0)
     size = _sql.Column(_sql.Float, default=0)

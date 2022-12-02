@@ -32,7 +32,7 @@ def create_dcatran(
 )
 def create_or_update_dcatran(
     dcabot_id: int,
-    order_id: int,
+    order_id: str,
     # NG dcatran: _schemas.DCATranCreate,
     dcatran: _schemas.DCATran,  # OK because `update`, need to change DCATranCreate to DCATran
     db: _orm.Session = _fastapi.Depends(_services.get_db),
@@ -72,7 +72,7 @@ def create_or_update_dcatran(
 )
 def get_dcatran_orderid(
     dcabot_id: int,
-    order_id: int,
+    order_id: str,
     db: _orm.Session = _fastapi.Depends(_services.get_db),
 ):
     db_dcatran = _services.get_dcatran_orderid(
