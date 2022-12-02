@@ -431,7 +431,7 @@ def create_dcatran(db: _orm.Session, dcatran: _schemas.DCATranCreate, dcabot_id:
     return dcatran
 
 
-def get_dcatran_orderid(db: _orm.Session, dcabot_id: int, order_id: int):
+def get_dcatran_orderid(db: _orm.Session, dcabot_id: int, order_id: str):
     if dcabot_id > 0:
         return (
             db.query(_models.DCATran)
